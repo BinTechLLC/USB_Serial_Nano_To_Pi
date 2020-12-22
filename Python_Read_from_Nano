@@ -1,0 +1,50 @@
+#!/usr/bin/python3.7
+import time
+import serial
+from time import strftime,sleep
+runIt = True
+##############################################################################
+try:
+    ser = serial.Serial('/dev/ttyUSB0',115200,timeout=1)
+    ser.flush()
+except Exception as e:
+    print(e)
+    try:
+        ser = serial.Serial('/dev/ttyUSB1',115200,timeout=1)
+        ser.flush()
+    except Exception as e:
+        print(e)
+        exit()
+##############################################################################
+while (runIt):
+    try:
+        if (ser.in_waiting > 0):
+            dataIn = ser.readline().decode('utf-8').rstrip().split(':')
+            b1 = int(dataIn[0])
+            b2 = int(dataIn[1])
+            b3 = int(dataIn[2])
+            b4 = int(dataIn[3])
+            b5 = int(dataIn[4])
+            b6 = int(dataIn[5])
+            b7 = int(dataIn[6])
+            b8 = int(dataIn[7])
+            string1 = str("1: ")+str(b1)+str("   ")
+            string2 = str("2: ")+str(b2)+str("   ")
+            string3 = str("3: ")+str(b3)+str("   ")
+            string4 = str("4: ")+str(b4)+str("   ")
+            string5 = str("5: ")+str(b5)+str("   ")
+            string6 = str("6: ")+str(b6)+str("   ")
+            string7 = str("7: ")+str(b7)+str("   ")
+            string8 = str("8: ")+str(b8)
+            if (b8 == 0):
+                print(str(strftime("%r"))+str("  On"))
+            elif (b8 == 1):
+                print(str(strftime("%r"))+str("  Off"))
+            #print(str(string1)+str(string2)+str(string3)+str(string4)+str(string5)+str(string6)+str(string7)+str(string8))
+    except Exception as e:
+        print(e)
+        if str(e) == "[Errno 5] Input/output error":
+            ser.close()
+            exit()
+        else:
+            pass
